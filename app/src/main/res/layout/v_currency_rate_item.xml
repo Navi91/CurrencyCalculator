@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="0"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:minWidth="48dp" />
 
 </LinearLayout>
