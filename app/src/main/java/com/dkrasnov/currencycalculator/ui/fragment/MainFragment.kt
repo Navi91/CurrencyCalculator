@@ -14,7 +14,7 @@ import com.dkrasnov.currencycalculator.mvp.MainView
 import com.dkrasnov.currencycalculator.ui.adapter.CurrencyRateAdapter
 import kotlinx.android.synthetic.main.f_main.*
 
-class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.OnCurrencyValueChangeListener {
+class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.CurrencyRAteAdapterListener {
 
 
     @InjectPresenter
@@ -48,5 +48,9 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.OnCur
 
     override fun onValueChange(value: Float) {
         mainPresenter.changeBaseValue(value)
+    }
+
+    override fun onItemClicked(item: CurrencyRateItem) {
+        mainPresenter.changeBaseCurrencyRateAndValue(item.currencyRate, item.value)
     }
 }

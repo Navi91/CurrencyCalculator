@@ -8,5 +8,5 @@ import retrofit2.http.Query
 interface RetrofitApi {
 
     @GET("/latest")
-    fun getCurrencyRateList(@Query("name") currencyName: String): Flowable<RateListResponse>
+    fun getCurrencyRateList(@Query("base") currencyName: String): Flowable<RateListResponse>
 }

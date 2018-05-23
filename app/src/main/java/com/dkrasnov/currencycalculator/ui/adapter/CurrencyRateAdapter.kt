@@ -10,7 +10,7 @@ import com.dkrasnov.currencycalculator.R
 import com.dkrasnov.currencycalculator.mvp.CurrencyRateItem
 import kotlinx.android.synthetic.main.v_currency_rate_item.view.*
 
-class CurrencyRateAdapter(val listener: OnCurrencyValueChangeListener) : RecyclerView.Adapter<CurrencyRateAdapter.CurrencyRateItemViewHolder>() {
+class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerView.Adapter<CurrencyRateAdapter.CurrencyRateItemViewHolder>() {
 
     var items: List<CurrencyRateItem> = listOf()
     private val textWatcher: TextWatcher = object : TextWatcher {
@@ -61,12 +61,18 @@ class CurrencyRateAdapter(val listener: OnCurrencyValueChangeListener) : Recycle
         if (position == 0) {
             editText.addTextChangedListener(textWatcher)
         }
+
+        holder.itemView.setOnClickListener {
+            listener.onItemClicked(item)
+        }
     }
 
-    class CurrencyRateItemViewHolder(listener: OnCurrencyValueChangeListener, itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class CurrencyRateItemViewHolder(listener: CurrencyRAteAdapterListener, itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
-    interface OnCurrencyValueChangeListener {
+    interface CurrencyRAteAdapterListener {
         fun onValueChange(value: Float)
+
+        fun onItemClicked(item: CurrencyRateItem)
     }
 }
