@@ -5,7 +5,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.dkrasnov.currencycalculator.R
 import com.dkrasnov.currencycalculator.mvp.MainView
 
-class MainActivity : MvpAppCompatActivity(), MainView {
+class MainActivity : MvpAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

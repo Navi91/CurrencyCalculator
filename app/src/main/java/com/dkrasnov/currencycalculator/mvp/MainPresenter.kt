@@ -1,6 +1,7 @@
 package com.dkrasnov.currencycalculator.mvp
 
 import android.util.Log
+import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.dkrasnov.currencycalculator.api.exchangerate.CurrencyRateApi
 import com.dkrasnov.currencycalculator.dagger.ComponentHolder
@@ -14,6 +15,7 @@ import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@InjectViewState
 class MainPresenter : MvpPresenter<MainView>() {
 
     @Inject
@@ -83,6 +85,8 @@ class MainPresenter : MvpPresenter<MainView>() {
         val items = sortedList.map { CurrencyRateItem(it, baseCurrencyValue * it.rate) }
 
         Log.d("main_trace", "updateViewState $items")
+
+        viewState.updateData(items)
     }
 
     override fun onDestroy() {

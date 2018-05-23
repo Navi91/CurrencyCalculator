@@ -4,6 +4,8 @@ import com.dkrasnov.currencycalculator.model.data.CurrencyRate
 
 data class CurrencyRateItem(val currencyRate: CurrencyRate, val value: Float) {
 
+    val name = currencyRate.name
+
     override fun hashCode(): Int {
         var hashCode = 17
 
