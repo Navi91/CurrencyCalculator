@@ -1,6 +1,7 @@
 package com.dkrasnov.currencycalculator.ui.fragment
 
 import android.os.Bundle
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.dkrasnov.currencycalculator.mvp.CurrencyRateItem
 import com.dkrasnov.currencycalculator.mvp.MainPresenter
 import com.dkrasnov.currencycalculator.mvp.MainView
 import com.dkrasnov.currencycalculator.ui.adapter.CurrencyRateAdapter
+import com.dkrasnov.currencycalculator.ui.adapter.diffutils.CurrencyRateItemsDiffUtils
 import kotlinx.android.synthetic.main.f_main.*
 
 class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.CurrencyRAteAdapterListener {
@@ -42,8 +44,14 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
     }
 
     override fun updateData(items: List<CurrencyRateItem>) {
-        adapter.items = items
-        adapter.notifyDataSetChanged()
+//        if (adapter.items.isEmpty()) {
+//            adapter.items = items
+//            adapter.notifyDataSetChanged()
+//        } else {
+            val diffResult = DiffUtil.calculateDiff(CurrencyRateItemsDiffUtils(adapter.items, items))
+            adapter.items = items
+            diffResult.dispatchUpdatesTo(adapter)
+//        }
     }
 
     override fun onValueChange(value: Float) {

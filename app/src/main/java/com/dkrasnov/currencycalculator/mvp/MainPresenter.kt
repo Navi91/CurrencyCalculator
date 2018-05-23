@@ -34,7 +34,7 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     fun requestData() {
 
-        disposable = Flowable.interval(1, TimeUnit.SECONDS)
+        disposable = Flowable.interval(5, TimeUnit.SECONDS)
                 .map { baseCurrencyRate.currency }
                 .flatMap {
                     currencyRateApi.requestCurrencyRateList(it)
@@ -89,14 +89,14 @@ class MainPresenter : MvpPresenter<MainView>() {
         viewState.updateData(items)
     }
 
-    private fun calculateValue(rate: Float): Float {
-        return Math.round(baseCurrencyValue * rate * 100).toFloat() / 100
-    }
-
     override fun onDestroy() {
         super.onDestroy()
 
         disposable?.dispose()
+    }
+
+    private fun calculateValue(rate: Float): Float {
+        return Math.round(baseCurrencyValue * rate * 100).toFloat() / 100
     }
 
     private fun createDefaultCurrencyRate() = CurrencyRate(Currency("EUR"), 1F)

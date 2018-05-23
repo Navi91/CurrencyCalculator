@@ -2,7 +2,7 @@ package com.dkrasnov.currencycalculator.mvp
 
 import com.dkrasnov.currencycalculator.model.data.CurrencyRate
 
-data class CurrencyRateItem(val currencyRate: CurrencyRate, val value: Float) {
+data class CurrencyRateItem(val currencyRate: CurrencyRate, var value: Float) {
 
     val name = currencyRate.name
 

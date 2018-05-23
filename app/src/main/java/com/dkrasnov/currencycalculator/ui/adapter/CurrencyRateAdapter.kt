@@ -3,6 +3,7 @@ package com.dkrasnov.currencycalculator.ui.adapter
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,20 +16,21 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
     var items: List<CurrencyRateItem> = listOf()
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            try {
-                val value = s.toString().toFloat()
 
-                listener.onValueChange(value)
-            } catch (e: NumberFormatException) {
-
-            }
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            try {
+                val value = if (s.toString().isEmpty()) 0F else s.toString().toFloat()
 
+                items[0].value = Math.round(value * 100).toFloat() / 100
+                listener.onValueChange(value)
+            } catch (e: NumberFormatException) {
+
+            }
         }
     }
 
@@ -42,6 +44,8 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: CurrencyRateItemViewHolder, position: Int) {
+        Log.d("adapter_trace", "bind $position")
+
         val item = items[position]
         val value = item.value
 
@@ -52,7 +56,7 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
 
         if (Math.abs(value) < 0.00001F) {
             editText.setText("")
-        } else {
+        } else if (position != 0 || editText.text.toString() != item.value.toString()) {
             editText.setText(item.value.toString())
         }
 
