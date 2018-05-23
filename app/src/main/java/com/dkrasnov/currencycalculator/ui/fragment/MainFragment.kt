@@ -37,21 +37,23 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
         recyclerView.adapter = adapter
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onResume() {
+        super.onResume()
 
-        mainPresenter.requestData()
+        mainPresenter.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        mainPresenter.pause()
     }
 
     override fun updateData(items: List<CurrencyRateItem>) {
-//        if (adapter.items.isEmpty()) {
-//            adapter.items = items
-//            adapter.notifyDataSetChanged()
-//        } else {
-            val diffResult = DiffUtil.calculateDiff(CurrencyRateItemsDiffUtils(adapter.items, items))
-            adapter.items = items
-            diffResult.dispatchUpdatesTo(adapter)
-//        }
+        val diffResult = DiffUtil.calculateDiff(CurrencyRateItemsDiffUtils(adapter.items, items))
+        adapter.items = items
+        diffResult.dispatchUpdatesTo(adapter)
+//        recyclerView.smoothScrollToPosition(0)
     }
 
     override fun onValueChange(value: Float) {
