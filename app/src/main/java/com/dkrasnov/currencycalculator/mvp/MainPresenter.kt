@@ -82,11 +82,15 @@ class MainPresenter : MvpPresenter<MainView>() {
     private fun updateViewState() {
         val sortedList = sorter.sort(currentCurrencyRateList.currencyRateList)
 
-        val items = sortedList.map { CurrencyRateItem(it, baseCurrencyValue * it.rate) }
+        val items = sortedList.map { CurrencyRateItem(it, calculateValue(it.rate)) }
 
         Log.d("main_trace", "updateViewState $items")
 
         viewState.updateData(items)
+    }
+
+    private fun calculateValue(rate: Float): Float {
+        return Math.round(baseCurrencyValue * rate * 100).toFloat() / 100
     }
 
     override fun onDestroy() {
