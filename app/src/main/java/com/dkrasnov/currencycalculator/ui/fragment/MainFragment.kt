@@ -50,10 +50,14 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
     }
 
     override fun updateData(items: List<CurrencyRateItem>) {
+        val scrollToTop = isTopCurrencyChanged(adapter.items, items)
+
         val diffResult = DiffUtil.calculateDiff(CurrencyRateItemsDiffUtils(adapter.items, items))
         adapter.items = items
         diffResult.dispatchUpdatesTo(adapter)
-//        recyclerView.smoothScrollToPosition(0)
+
+
+        if (scrollToTop) recyclerView.smoothScrollToPosition(0)
     }
 
     override fun onValueChange(value: Float) {
@@ -62,5 +66,14 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
 
     override fun onItemClicked(item: CurrencyRateItem) {
         mainPresenter.changeBaseCurrencyRateAndValue(item.currencyRate, item.value)
+    }
+
+    private fun isTopCurrencyChanged(oldItems: List<CurrencyRateItem>, newItems: List<CurrencyRateItem>): Boolean {
+        val oldTopItem = oldItems.getOrNull(0)
+        val newTopItem = newItems.getOrNull(0)
+
+        if (oldTopItem == null || newTopItem == null) return false
+
+        return oldTopItem.name != newTopItem.name
     }
 }

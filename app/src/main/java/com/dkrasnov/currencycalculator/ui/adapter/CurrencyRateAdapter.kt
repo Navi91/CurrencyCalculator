@@ -3,7 +3,6 @@ package com.dkrasnov.currencycalculator.ui.adapter
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,8 +43,6 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: CurrencyRateItemViewHolder, position: Int) {
-        Log.d("adapter_trace", "bind $position")
-
         val item = items[position]
         val value = item.value
 
@@ -71,8 +68,7 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         }
     }
 
-    class CurrencyRateItemViewHolder(listener: CurrencyRAteAdapterListener, itemView: View) : RecyclerView.ViewHolder(itemView) {
-    }
+    class CurrencyRateItemViewHolder(listener: CurrencyRAteAdapterListener, itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface CurrencyRAteAdapterListener {
         fun onValueChange(value: Float)
