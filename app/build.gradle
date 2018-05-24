@@ -7,7 +7,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.dkrasnov.currencycalculator"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -50,4 +50,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation   'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.github.midorikocak:currency-picker-android:1.1.9'
 }

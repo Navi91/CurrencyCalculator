@@ -1,7 +1,7 @@
 package com.dkrasnov.currencycalculator.model.data
 
 data class CurrencyRate(val currency: Currency, val rate: Float) {
-    val name = currency.name
+    val code = currency.code
 
     companion object {
         fun create(name: String, rate: Float = 1F) = CurrencyRate(Currency(name), rate)
@@ -25,6 +25,6 @@ data class CurrencyRate(val currency: Currency, val rate: Float) {
     }
 
     override fun toString(): String {
-        return "CurrencyRate currency: ${currency.name} rate: $rate"
+        return "CurrencyRate currency: ${currency.code} rate: $rate"
     }
 }

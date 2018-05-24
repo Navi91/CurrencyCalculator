@@ -7,10 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dkrasnov.currencycalculator.R
+import com.dkrasnov.currencycalculator.api.exchangerate.ExtendedCurrencyProvider
+import com.dkrasnov.currencycalculator.dagger.ComponentHolder
 import com.dkrasnov.currencycalculator.mvp.CurrencyRateItem
 import kotlinx.android.synthetic.main.v_currency_rate_item.view.*
+import javax.inject.Inject
 
 class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerView.Adapter<CurrencyRateAdapter.CurrencyRateItemViewHolder>() {
+
+    @Inject
+    lateinit var extendedCurrencyProvider: ExtendedCurrencyProvider
 
     var items: List<CurrencyRateItem> = listOf()
     private val textWatcher: TextWatcher = object : TextWatcher {
@@ -33,6 +39,10 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         }
     }
 
+    init {
+        ComponentHolder.applicationComponent().inject(this)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyRateItemViewHolder {
         val context = parent.context
 
@@ -42,11 +52,19 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
 
     override fun getItemCount(): Int = items.size
 
+    override fun getItemViewType(position: Int): Int {
+        return 0
+    }
+
     override fun onBindViewHolder(holder: CurrencyRateItemViewHolder, position: Int) {
         val item = items[position]
         val value = item.value
 
-        holder.itemView.nameTextView.text = item.name
+        val extendedCurrency = extendedCurrencyProvider.getExtendedCurrencyByCode(item.code)
+
+        holder.itemView.codeTextView.text = extendedCurrency?.code
+        holder.itemView.nameTextView.text = extendedCurrency?.name
+        holder.itemView.iconImageView.setImageResource(extendedCurrency?.flag ?: -1)
 
         val editText = holder.itemView.valueEditText
         editText.removeTextChangedListener(textWatcher)

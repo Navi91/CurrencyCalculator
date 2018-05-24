@@ -1,11 +1,11 @@
 package com.dkrasnov.currencycalculator.model.data
 
-data class Currency(val name: String) {
+data class Currency(val code: String) {
 
     override fun hashCode(): Int {
         var hashCode = 17
 
-        hashCode += 31 * hashCode + name.hashCode()
+        hashCode += 31 * hashCode + code.hashCode()
 
         return hashCode
     }
@@ -15,10 +15,10 @@ data class Currency(val name: String) {
 
         if (other !is Currency) return false
 
-        return name == other.name
+        return code == other.code
     }
 
     override fun toString(): String {
-        return "Currency $name"
+        return "Currency $code"
     }
 }

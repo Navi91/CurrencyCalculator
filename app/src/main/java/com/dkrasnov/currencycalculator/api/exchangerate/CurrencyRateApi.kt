@@ -10,7 +10,7 @@ import javax.inject.Inject
 class CurrencyRateApi @Inject constructor(private val retrofitApi: RetrofitApi) {
 
     fun requestCurrencyRateList(currency: Currency): Flowable<CurrencyRateList> {
-        return retrofitApi.getCurrencyRateList(currency.name).map {
+        return retrofitApi.getCurrencyRateList(currency.code).map {
             val baseCurrencyRate = CurrencyRate.create(it.getBase())
             val currencyRates = mutableListOf(baseCurrencyRate)
 

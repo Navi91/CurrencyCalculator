@@ -56,7 +56,6 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
         adapter.items = items
         diffResult.dispatchUpdatesTo(adapter)
 
-
         if (scrollToTop) recyclerView.smoothScrollToPosition(0)
     }
 
@@ -74,6 +73,6 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
 
         if (oldTopItem == null || newTopItem == null) return false
 
-        return oldTopItem.name != newTopItem.name
+        return oldTopItem.code != newTopItem.code
     }
 }
