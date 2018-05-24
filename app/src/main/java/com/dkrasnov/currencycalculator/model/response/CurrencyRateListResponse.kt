@@ -1,6 +1,6 @@
 package com.dkrasnov.currencycalculator.model.response
 
-class RateListResponse {
+class CurrencyRateListResponse {
 
     private var base: String = ""
     private var date: String = ""
@@ -11,6 +11,6 @@ class RateListResponse {
     fun getRates() = rates
 
     override fun toString(): String {
-        return "RateListResponse base: $base date: $date rates: $rates"
+        return "CurrencyRateListResponse base: $base date: $date rates: $rates"
     }
 }
