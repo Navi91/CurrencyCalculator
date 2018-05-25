@@ -1,6 +1,7 @@
 package com.dkrasnov.currencycalculator.ui.adapter.diffutils
 
 import android.support.v7.util.DiffUtil
+import android.util.Log
 import com.dkrasnov.currencycalculator.mvp.CurrencyRateItem
 
 class CurrencyRateItemsDiffUtils(private val oldItems: List<CurrencyRateItem>, private val newItems: List<CurrencyRateItem>)
@@ -11,6 +12,11 @@ class CurrencyRateItemsDiffUtils(private val oldItems: List<CurrencyRateItem>, p
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val same = oldItems[oldItemPosition].value == newItems[newItemPosition].value
+                && ((newItemPosition != 0 && oldItemPosition != 0) || (newItemPosition == 0 && oldItemPosition == 0))
+
+        if (!same) Log.d("diff_trace", "not same $oldItemPosition $newItemPosition ${oldItems[oldItemPosition].value} ${newItems[newItemPosition].value}")
+
         return oldItems[oldItemPosition].value == newItems[newItemPosition].value
                 && ((newItemPosition != 0 && oldItemPosition != 0) || (newItemPosition == 0 && oldItemPosition == 0))
     }

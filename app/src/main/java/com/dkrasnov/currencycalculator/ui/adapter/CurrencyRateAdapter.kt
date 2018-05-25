@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dkrasnov.currencycalculator.R
+import com.dkrasnov.currencycalculator.api.exchangerate.CurrencyValueHelper
 import com.dkrasnov.currencycalculator.api.exchangerate.ExtendedCurrencyProvider
 import com.dkrasnov.currencycalculator.dagger.ComponentHolder
 import com.dkrasnov.currencycalculator.mvp.CurrencyRateItem
@@ -19,25 +20,7 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
     lateinit var extendedCurrencyProvider: ExtendedCurrencyProvider
 
     var items: List<CurrencyRateItem> = listOf()
-    private val textWatcher: TextWatcher = object : TextWatcher {
-        override fun afterTextChanged(s: Editable?) {
-
-        }
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            try {
-                val value = if (s.toString().isEmpty()) 0F else s.toString().toFloat()
-
-                items[0].value = Math.round(value * 100).toFloat() / 100
-                listener.onValueChange(value)
-            } catch (e: NumberFormatException) {
-
-            }
-        }
-    }
+    private val valueTextWatcher = CurrencyValueTextWatcher()
 
     init {
         ComponentHolder.applicationComponent().inject(this)
@@ -46,8 +29,7 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyRateItemViewHolder {
         val context = parent.context
 
-        return CurrencyRateItemViewHolder(listener,
-                LayoutInflater.from(context).inflate(R.layout.v_currency_rate_item, parent, false))
+        return CurrencyRateItemViewHolder(LayoutInflater.from(context).inflate(R.layout.v_currency_rate_item, parent, false))
     }
 
     override fun getItemCount(): Int = items.size
@@ -56,37 +38,73 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         return 0
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     override fun onBindViewHolder(holder: CurrencyRateItemViewHolder, position: Int) {
         val item = items[position]
-        val value = item.value
+        holder.bind(item, position)
+    }
 
-        val extendedCurrency = extendedCurrencyProvider.getExtendedCurrencyByCode(item.code)
+    inner class CurrencyRateItemViewHolder(itemView: View)
+        : RecyclerView.ViewHolder(itemView) {
 
-        holder.itemView.codeTextView.text = extendedCurrency?.code
-        holder.itemView.nameTextView.text = extendedCurrency?.name
-        holder.itemView.iconImageView.setImageResource(extendedCurrency?.flag ?: -1)
+        fun bind(item: CurrencyRateItem, position: Int) {
+            val value = item.value
 
-        val editText = holder.itemView.valueEditText
-        editText.removeTextChangedListener(textWatcher)
+            val extendedCurrency = extendedCurrencyProvider.getExtendedCurrencyByCode(item.code)
 
-        if (Math.abs(value) < 0.00001F) {
-            editText.setText("")
-        } else if (position != 0 || editText.text.toString() != item.value.toString()) {
-            editText.setText(item.value.toString())
-        }
+            itemView.codeTextView.text = extendedCurrency?.code
+            itemView.nameTextView.text = extendedCurrency?.name
+            itemView.iconImageView.setImageResource(extendedCurrency?.flag ?: -1)
 
-        editText.isEnabled = position == 0
+            val editText = itemView.valueEditText
+            editText.removeTextChangedListener(valueTextWatcher)
 
-        if (position == 0) {
-            editText.addTextChangedListener(textWatcher)
-        }
+            if (Math.abs(value) < 0.00001F) {
+                editText.setText("")
+            } else if (!CurrencyValueHelper.valuePresentationEquals(editText.text.toString(), item.value)) {
+                editText.setText(item.value.toString())
+            }
 
-        holder.itemView.setOnClickListener {
-            listener.onItemClicked(item)
+            if (position == 0) {
+                valueTextWatcher.setCallback {
+                    val newValue = CurrencyValueHelper.roundValue(it)
+                    items[0].value = newValue
+                    listener.onValueChange(newValue)
+                }
+                editText.addTextChangedListener(valueTextWatcher)
+            }
+
+            editText.setOnClickListener { listener.onItemClicked(item) }
+            itemView.setOnClickListener { listener.onItemClicked(item) }
         }
     }
 
-    class CurrencyRateItemViewHolder(listener: CurrencyRAteAdapterListener, itemView: View) : RecyclerView.ViewHolder(itemView)
+    class CurrencyValueTextWatcher : TextWatcher {
+        private var valueChangeCallback: ((Float) -> Unit?)? = null
+
+        override fun afterTextChanged(s: Editable?) {
+            try {
+                val value = if (s.toString().isEmpty()) 0F else s.toString().toFloat()
+
+                valueChangeCallback?.invoke(value)
+            } catch (e: NumberFormatException) {
+
+            }
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        }
+
+        fun setCallback(callback: (Float) -> Unit) {
+            valueChangeCallback = callback
+        }
+    }
 
     interface CurrencyRAteAdapterListener {
         fun onValueChange(value: Float)

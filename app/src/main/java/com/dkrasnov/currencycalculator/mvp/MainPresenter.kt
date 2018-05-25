@@ -41,7 +41,7 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     private fun requestData() {
-        disposable = Flowable.concat(Flowable.just(0), Flowable.interval(1, TimeUnit.SECONDS))
+        disposable = Flowable.concat(Flowable.just(0), Flowable.interval(102, TimeUnit.SECONDS))
                 .map { baseCurrencyRate.currency }
                 .flatMap {
                     currencyRateApi.requestCurrencyRateList(it)

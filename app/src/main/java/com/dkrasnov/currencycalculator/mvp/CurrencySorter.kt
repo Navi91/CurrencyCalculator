@@ -2,27 +2,37 @@ package com.dkrasnov.currencycalculator.mvp
 
 import com.dkrasnov.currencycalculator.model.data.Currency
 import com.dkrasnov.currencycalculator.model.data.CurrencyRate
-import java.util.*
 
 class CurrencySorter() {
 
-    private var orderList: List<Currency> = listOf()
+    private var orderMap = mutableMapOf<String, Int>()
 
     fun setOrder(orderList: List<Currency>) {
-        this.orderList = orderList
+        orderList.forEachIndexed({ index, currency ->
+            orderMap[currency.code] = index
+        })
     }
 
-    fun haveOrder() = orderList.isNotEmpty()
+    fun haveOrder() = orderMap.isNotEmpty()
 
     fun setFirstCurrency(currency: Currency) {
-        Collections.swap(orderList, 0, orderList.indexOf(currency))
+        val currentPosition = orderMap[currency.code] ?: return
+
+        orderMap.entries.forEach {
+            if (it.value < currentPosition) {
+                orderMap[it.key] = it.value + 1
+            }
+        }
+
+        orderMap[currency.code] = 0
     }
 
     fun sort(currencyRateList: List<CurrencyRate>): List<CurrencyRate> {
         val result = currencyRateList.toMutableList()
 
         currencyRateList.forEach {
-            result[orderList.indexOf(it.currency)] = it
+            val position = orderMap[it.code] ?: throw IllegalStateException()
+            result[position] = it
         }
 
         return result

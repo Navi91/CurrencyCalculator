@@ -32,6 +32,7 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
         super.onViewCreated(view, savedInstanceState)
 
         adapter = CurrencyRateAdapter(this)
+        adapter.setHasStableIds(true)
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
