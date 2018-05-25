@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.dkrasnov.currencycalculator.R
@@ -60,7 +61,11 @@ class MainFragment : MvpAppCompatFragment(), MainView, CurrencyRateAdapter.Curre
         if (scrollToTop) recyclerView.smoothScrollToPosition(0)
     }
 
-    override fun onValueChange(value: Float) {
+    override fun showError(message: String) {
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onValueChange(value: Double) {
         mainPresenter.changeBaseValue(value)
     }
 

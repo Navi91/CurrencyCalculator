@@ -8,4 +8,7 @@ interface MainView: MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun updateData(items: List<CurrencyRateItem>)
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun showError(message: String)
 }

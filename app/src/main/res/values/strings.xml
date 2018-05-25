@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CurrencyCalculator</string>
+    <string name="error_unknown">Unknown error</string>
 </resources>

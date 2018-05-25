@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import com.dkrasnov.currencycalculator.R
-import com.dkrasnov.currencycalculator.api.exchangerate.CurrencyValueHelper
+import com.dkrasnov.currencycalculator.util.CurrencyValueHelper
 import com.dkrasnov.currencycalculator.api.exchangerate.ExtendedCurrencyProvider
 import com.dkrasnov.currencycalculator.dagger.ComponentHolder
 import com.dkrasnov.currencycalculator.mvp.CurrencyRateItem
@@ -84,7 +84,7 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         private fun bindValue(item: CurrencyRateItem, position: Int, editText: EditText) {
             val value = item.value
 
-            if (CurrencyValueHelper.isSameValues(value, 0F)) {
+            if (CurrencyValueHelper.isSameValues(value, 0.0)) {
                 editText.setText("")
             } else if (!CurrencyValueHelper.valuePresentationEquals(editText.text.toString(), item.value)) {
                 editText.setText(item.value.toString())
@@ -114,11 +114,11 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
     }
 
     class CurrencyValueTextWatcher : TextWatcher {
-        private var valueChangeCallback: ((Float) -> Unit?)? = null
+        private var valueChangeCallback: ((Double) -> Unit?)? = null
 
         override fun afterTextChanged(s: Editable?) {
             try {
-                val value = if (s.toString().isEmpty()) 0F else s.toString().toFloat()
+                val value = if (s.toString().isEmpty()) 0.0 else s.toString().toDouble()
 
                 valueChangeCallback?.invoke(value)
             } catch (e: NumberFormatException) {
@@ -132,13 +132,13 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         }
 
-        fun setCallback(callback: (Float) -> Unit) {
+        fun setCallback(callback: (Double) -> Unit) {
             valueChangeCallback = callback
         }
     }
 
     interface CurrencyRAteAdapterListener {
-        fun onValueChange(value: Float)
+        fun onValueChange(value: Double)
 
         fun onItemClicked(item: CurrencyRateItem)
     }

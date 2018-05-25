@@ -1,17 +1,19 @@
 package com.dkrasnov.currencycalculator.model.data
 
-data class CurrencyRate(val currency: Currency, val rate: Float) {
+import com.dkrasnov.currencycalculator.util.CurrencyValueHelper
+
+data class CurrencyRate(val currency: Currency, val rate: Double) {
     val code = currency.code
 
     companion object {
-        fun create(name: String, rate: Float = 1F) = CurrencyRate(Currency(name), rate)
+        fun create(name: String, rate: Double = 1.0) = CurrencyRate(Currency(name), rate)
     }
 
     override fun hashCode(): Int {
         var hashCode = 17
 
         hashCode += 31 * hashCode + currency.hashCode()
-        hashCode += 31 * hashCode + java.lang.Float.floatToIntBits(rate)
+        hashCode += 31 * hashCode + java.lang.Double.doubleToLongBits(rate).toInt()
 
         return hashCode
     }
@@ -21,7 +23,8 @@ data class CurrencyRate(val currency: Currency, val rate: Float) {
 
         if (other !is CurrencyRate) return false
 
-        return other.currency == currency && Math.abs(rate.minus(other.rate)) < 0.00001F
+
+        return other.currency == currency && CurrencyValueHelper.isSameValues(rate, other.rate)
     }
 
     override fun toString(): String {

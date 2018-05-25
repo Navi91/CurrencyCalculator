@@ -4,7 +4,7 @@ class CurrencyRateListResponse {
 
     private var base: String = ""
     private var date: String = ""
-    private var rates: MutableMap<String, Float> = mutableMapOf()
+    private var rates: MutableMap<String, Double> = mutableMapOf()
 
     fun getBase() = base
 

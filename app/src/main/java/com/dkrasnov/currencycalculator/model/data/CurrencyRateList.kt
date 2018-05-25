@@ -6,7 +6,7 @@ class CurrencyRateList(val baseCurrencyRate: CurrencyRate, val currencyRateList:
         val newBaseRate = newBaseCurrencyRate.rate
 
         val newCurrencyRateList = currencyRateList.map {
-            CurrencyRate(it.currency, it.rate / newBaseRate)
+            CurrencyRate(it.currency, it.rate.div(newBaseRate))
         }
 
         return CurrencyRateList(newBaseCurrencyRate, newCurrencyRateList)
