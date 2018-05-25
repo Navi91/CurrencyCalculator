@@ -9,10 +9,12 @@ class CurrencyValueHelper {
             return try {
                 val parsedValue = presentation.toFloat()
 
-                Math.abs(parsedValue.div(value)) < 0.0001F
+                Math.abs(parsedValue.minus(value)) < 0.0001F
             } catch (e: NumberFormatException) {
                 false
             }
         }
+
+        fun isSameValues(value1: Float, value2: Float) = Math.abs(value1.minus(value2)) < 0.0001F
     }
 }

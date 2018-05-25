@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import com.dkrasnov.currencycalculator.R
 import com.dkrasnov.currencycalculator.api.exchangerate.CurrencyValueHelper
 import com.dkrasnov.currencycalculator.api.exchangerate.ExtendedCurrencyProvider
@@ -38,10 +39,6 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         return 0
     }
 
-//    override fun getItemId(position: Int): Long {
-//        return position.toLong()
-//    }
-
     override fun onBindViewHolder(holder: CurrencyRateItemViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item, position)
@@ -51,24 +48,30 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: CurrencyRateItem, position: Int) {
-            val value = item.value
+            bindCurrencyInfo(item, position, itemView)
 
+            val editText = itemView.valueEditText
+
+            bindValueAndTextWatcher(item, position, editText)
+            bindOnFocusChangeListener(item, position, editText)
+            bindOnCLickListener(item, position, itemView, editText)
+        }
+
+        private fun bindCurrencyInfo(item: CurrencyRateItem, position: Int, itemView: View) {
             val extendedCurrency = extendedCurrencyProvider.getExtendedCurrencyByCode(item.code)
 
             itemView.codeTextView.text = extendedCurrency?.code
             itemView.nameTextView.text = extendedCurrency?.name
             itemView.iconImageView.setImageResource(extendedCurrency?.flag ?: -1)
+        }
 
-            val editText = itemView.valueEditText
+        private fun bindValueAndTextWatcher(item: CurrencyRateItem, position: Int, editText: EditText) {
             editText.removeTextChangedListener(valueTextWatcher)
 
-            if (Math.abs(value) < 0.00001F) {
-                editText.setText("")
-            } else if (!CurrencyValueHelper.valuePresentationEquals(editText.text.toString(), item.value)) {
-                editText.setText(item.value.toString())
-            }
+            bindValue(item, position, editText)
 
             if (position == 0) {
+                editText.setSelection(editText.text.length)
                 valueTextWatcher.setCallback {
                     val newValue = CurrencyValueHelper.roundValue(it)
                     items[0].value = newValue
@@ -76,11 +79,36 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
                 }
                 editText.addTextChangedListener(valueTextWatcher)
             }
+        }
 
-            editText.setOnClickListener { listener.onItemClicked(item) }
+        private fun bindValue(item: CurrencyRateItem, position: Int, editText: EditText) {
+            val value = item.value
+
+            if (CurrencyValueHelper.isSameValues(value, 0F)) {
+                editText.setText("")
+            } else if (!CurrencyValueHelper.valuePresentationEquals(editText.text.toString(), item.value)) {
+                editText.setText(item.value.toString())
+            }
+        }
+
+        private fun bindOnFocusChangeListener(item: CurrencyRateItem, position: Int, editText: EditText) {
+            if (position == 0) {
+                editText.onFocusChangeListener = null
+            } else {
+                editText.setOnFocusChangeListener { v, hasFocus ->
+                    if (hasFocus) {
+                        listener.onItemClicked(item)
+                    }
+                }
+            }
+        }
+
+        private fun bindOnCLickListener(item: CurrencyRateItem, position: Int, itemView: View, editText: EditText) {
             itemView.setOnClickListener {
-                listener.onItemClicked(item)
-                editText.requestFocus()
+                if (position != 0) {
+                    listener.onItemClicked(item)
+                    editText.requestFocus()
+                }
             }
         }
     }
