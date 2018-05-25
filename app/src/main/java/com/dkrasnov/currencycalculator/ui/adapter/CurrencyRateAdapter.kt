@@ -38,9 +38,9 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
         return 0
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+//    override fun getItemId(position: Int): Long {
+//        return position.toLong()
+//    }
 
     override fun onBindViewHolder(holder: CurrencyRateItemViewHolder, position: Int) {
         val item = items[position]
@@ -78,7 +78,10 @@ class CurrencyRateAdapter(val listener: CurrencyRAteAdapterListener) : RecyclerV
             }
 
             editText.setOnClickListener { listener.onItemClicked(item) }
-            itemView.setOnClickListener { listener.onItemClicked(item) }
+            itemView.setOnClickListener {
+                listener.onItemClicked(item)
+                editText.requestFocus()
+            }
         }
     }
 
